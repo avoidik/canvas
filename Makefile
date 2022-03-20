@@ -12,10 +12,14 @@ deploy:
 	@ENDPOINT_PARAM=$$(jq -n '{"containerName":"app","containerPort":8080,"healthCheck":{"path":"/health"}}')
 	@aws lightsail create-container-service-deployment --service-name canvas \
 		--containers "$${CONTAINER_PARAM}" \
-		--public-endpoint "$${ENDPOINT_PARAM}"
+		--public-endpoint "$${ENDPOINT_PARAM}" \
+		--query 'containerService.{state: state, url: url}'
 
 get-url:
 	@aws lightsail get-container-services --service-name canvas --query containerServices[*].url --output text
+
+get-state:
+	@aws lightsail get-container-service-deployments --service-name canvas --query 'reverse(sort_by(deployments, &createdAt))[0].{version: version, state: state}'
 
 cover:
 	@go tool cover -html=cover.out
