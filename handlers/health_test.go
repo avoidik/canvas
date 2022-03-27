@@ -2,6 +2,8 @@ package handlers_test
 
 import (
 	"canvas/handlers"
+	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,14 +13,31 @@ import (
 	"github.com/matryer/is"
 )
 
+type PingerMock struct {
+	err error
+}
+
+func (p *PingerMock) Ping(ctx context.Context) error {
+	return p.err
+}
+
 func TestHealth(t *testing.T) {
 	t.Run("return 200", func(t *testing.T) {
 		is := is.New(t)
 
 		mux := chi.NewMux()
-		handlers.Health(mux)
+		handlers.Health(mux, &PingerMock{})
 		code, _, _ := makeGetRequest(mux, "/health")
 		is.Equal(http.StatusOK, code)
+	})
+
+	t.Run("return 502", func(t *testing.T) {
+		is := is.New(t)
+
+		mux := chi.NewMux()
+		handlers.Health(mux, &PingerMock{err: errors.New("error")})
+		code, _, _ := makeGetRequest(mux, "/health")
+		is.Equal(http.StatusBadGateway, code)
 	})
 }
 

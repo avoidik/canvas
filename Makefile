@@ -1,8 +1,8 @@
 .ONESHELL:
 .SHELL := /bin/bash
-.PHONY: init build deploy get-url get-state list-containers delete-container destroy cover start test test-integration
+.PHONY: init build deploy get-url get-state list-containers delete-container destroy cover start test test-integration up down to
 
-REQUIRED_BINS := aws docker jq go
+REQUIRED_BINS := aws docker jq go lightsailctl
 $(foreach bin,$(REQUIRED_BINS),\
     $(if $(shell command -v $(bin) 2> /dev/null),,$(error Required binary `$(bin)` is missing, please install it)))
 
@@ -52,3 +52,15 @@ test:
 
 test-integration:
 	@go test -coverprofile=cover.out -p 1 ./...
+
+up:
+	@go run ./cmd/migrate up
+
+down:
+	@go run ./cmd/migrate down
+
+to:
+ifndef version
+	$(error version argument is undefined, set it as follows `version=3`)
+endif
+	@go run ./cmd/migrate to $(version)

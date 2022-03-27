@@ -8,9 +8,11 @@ import (
 )
 
 func CreateServer() func() {
+	db, cleanupDB := CreateDatabase()
 	s := server.New(server.Options{
 		Host: "localhost",
 		Port: 8081,
+		DB:   db,
 	})
 
 	go func() {
@@ -21,7 +23,7 @@ func CreateServer() func() {
 
 	for {
 		_, err := http.Get("http://localhost:8081")
-		if err != nil {
+		if err == nil {
 			break
 		}
 		time.Sleep(5 * time.Millisecond)
@@ -31,6 +33,7 @@ func CreateServer() func() {
 		if err := s.Stop(); err != nil {
 			panic(err)
 		}
+		cleanupDB()
 	}
 }
 

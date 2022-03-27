@@ -9,9 +9,9 @@ import (
 type SignUpMock struct{}
 
 func (s *Server) setupRoutes() {
-	handlers.Health(s.mux)
+	handlers.Health(s.mux, s.db)
 	handlers.FrontPage(s.mux)
-	handlers.NewsletterSignup(s.mux, &SignUpMock{})
+	handlers.NewsletterSignup(s.mux, s.db)
 	handlers.NewsletterThanks(s.mux)
 }
 
