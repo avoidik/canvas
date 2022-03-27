@@ -2,6 +2,10 @@
 .SHELL := /bin/bash
 .PHONY: init build deploy get-url get-state list-containers delete-container destroy cover start test test-integration
 
+REQUIRED_BINS := aws docker jq go
+$(foreach bin,$(REQUIRED_BINS),\
+    $(if $(shell command -v $(bin) 2> /dev/null),,$(error Required binary `$(bin)` is missing, please install it)))
+
 init:
 	@aws lightsail create-container-service --service-name canvas --power micro --scale 1 --tags key=label,value=app \
 		--query 'containerService.{state: state, url: url, region: location.regionName, power: powerId, scale: scale}' --output table
@@ -30,7 +34,7 @@ list-containers:
 
 delete-container:
 ifndef version
-	$(error version is undefined, set it as version=3)
+	$(error version argument is undefined, set it as follows `version=3`)
 endif
 	@aws lightsail delete-container-image --service-name canvas --image ":canvas.app.$(version)"
 
