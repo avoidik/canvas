@@ -29,14 +29,14 @@ curl -fsSL https://get.docker.com | bash
 # docker-compose
 #
 mkdir -p /usr/local/lib/docker/cli-plugins
-sudo curl -fsSL https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo curl -fsSL https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 #
 # golang
 #
-curl -fsSLO https://go.dev/dl/go1.17.8.linux-amd64.tar.gz
+curl -fsSLO https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.17.8.linux-amd64.tar.gz
-rm -f go1.17.8.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
+rm -f go1.18.3.linux-amd64.tar.gz
 cat <<'EOF' | tee -a ~/.profile > /dev/null
 if [ -d "$HOME/go/bin" ] ; then
     PATH="$HOME/go/bin:$PATH"
