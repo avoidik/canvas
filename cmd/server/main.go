@@ -65,6 +65,7 @@ func start() int {
 
 	if err := s.Start(); err != nil {
 		log.Info("Error starting server", zap.Error(err))
+		return 1
 	}
 
 	if errGroup.Wait(); err != nil {

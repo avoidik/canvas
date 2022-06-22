@@ -1,6 +1,6 @@
 .ONESHELL:
 .SHELL := /bin/bash
-.PHONY: init build deploy get-url get-state list-containers delete-container destroy cover start test test-integration up down to
+.PHONY: init build deploy get-url get-state list-containers delete-container destroy cover start test test-integration migrate-up migrate-down migrate-to compose-up compose-down
 
 REQUIRED_BINS := aws docker jq go lightsailctl
 $(foreach bin,$(REQUIRED_BINS),\
@@ -54,14 +54,22 @@ test:
 test-integration:
 	@go test -coverprofile=cover.out -p 1 ./...
 
-up:
+migrate-up:
 	@go run ./cmd/migrate up
 
-down:
+migrate-down:
 	@go run ./cmd/migrate down
 
-to:
+migrate-to:
 ifndef version
 	$(error version argument is undefined, set it as follows `version=3`)
 endif
 	@go run ./cmd/migrate to $(version)
+
+compose-up:
+	@TAG_RELEASE="$$(git rev-parse --abbrev-ref HEAD)-$$(git rev-parse --short=8 HEAD)" \
+	 docker compose up -d
+
+compose-down:
+	@TAG_RELEASE="$$(git rev-parse --abbrev-ref HEAD)-$$(git rev-parse --short=8 HEAD)" \
+	 docker compose down -v --rmi local

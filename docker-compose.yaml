@@ -1,21 +1,53 @@
 version: '3.8'
+
 services:
+
+  canvas:
+    build:
+      context: .
+      args:
+        TAG_RELEASE: "${TAG_RELEASE}"
+    restart: unless-stopped
+    environment:
+      HOST: ""
+      PORT: 8080
+      DB_HOST: postgres
+      DB_USER: canvas
+      DB_PASSWORD: 123
+      DB_NAME: canvas
+    networks:
+      - canvas
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:12
+    restart: unless-stopped
     environment:
       POSTGRES_USER: canvas
       POSTGRES_PASSWORD: 123
+      POSTGRES_DB: canvas
+    networks:
+      - canvas
     ports:
       - 5432:5432
     volumes:
       - postgres:/var/lib/postgresql/data
+
   postgres-test:
     image: postgres:12
+    restart: unless-stopped
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: template1
     ports:
       - 5433:5432
+
 volumes:
   postgres:
+
+networks:
+  canvas:

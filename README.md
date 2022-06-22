@@ -28,8 +28,9 @@ curl -fsSL https://get.docker.com | bash
 #
 # docker-compose
 #
-mkdir -p /usr/local/lib/docker/cli-plugins
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
 sudo curl -fsSL https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 #
 # golang
 #
@@ -57,7 +58,7 @@ sudo chmod +x /usr/local/bin/jq
 curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip
 unzip -q awscliv2.zip
 sudo ./aws/install
-rm -f awscliv2.zip
+rm -rf awscliv2.zip aws/
 #
 # lightsailctl
 #
